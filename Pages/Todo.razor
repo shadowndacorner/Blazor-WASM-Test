@@ -1,26 +1,28 @@
 @page "/todo"
 @using System.Linq
 @using blazor_client.Reactivity
+@using BlazorStrap
 @inherits blazor_client.Reactivity.ReactiveComponentBase
 
 <h1>TODO List</h1>
 
 <div class="input-group">
     <input placeholder="Label" @bind="workingTitle" />
-    <button class="btn btn-primary" @onclick="CreateItem">Create</button>
+    <BSButton Color="Color.Primary" @onclick="CreateItem">Create</BSButton>
 </div>
+
 @foreach (var item in SortedItems)
 {
     @if (item.Editing)
     {
         <input placeholder="Label" @bind="item.Label" />
-        <button class="btn btn-primary" @onclick="() => { item.Editing = false; item.Updated = DateTime.Now; }">Save</button>
+        <BSButton Color="Color.Primary" @onclick="() => { item.Editing = false; item.Updated = DateTime.Now; }">Save</BSButton>
     }
     else
     {
         <div class="input-group">
             <p>@item.Label (last updated @item.Updated.ToShortDateString() at @item.Updated.ToLongTimeString())</p>
-            <button @onclick="()=>item.Editing = true">Edit</button>
+            <BSButton Color="Color.Primary" @onclick="() => { item.Editing = true;}">Save</BSButton>
         </div>
     }
 }

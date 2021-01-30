@@ -1,0 +1,36 @@
+@using BlazorStrap;
+@using blazor_client.Reactivity;
+@inject blazor_client.Services.ToastManager toasts
+@inherits ReactiveComponentBase
+@namespace blazor_client.Components
+
+<div style="position: absolute; top: 67px; left: 0px; right: 0px; bottom: 0px; padding: 10px; pointer-events: none; display: flex; flex-direction: column; align-items: end;">
+    @foreach(var toast in toasts.Toasts)
+    {
+        <div style="pointer-events: auto; min-width: 100px;">
+            <BSToast IsVisible="true">
+                <BSToastHeader>@toast.Header</BSToastHeader>
+                <BSToastBody>@toast.Text</BSToastBody>
+            </BSToast>
+        </div>
+    }
+</div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        toasts.ToastListener += toastHandler;
+    }
+
+    protected override void OnShutdown()
+    {
+        base.OnShutdown();
+        toasts.ToastListener -= toastHandler;
+    }
+
+    private void toastHandler(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        SafeEnqueueStateHasChanged();
+    }
+}

@@ -1,7 +1,16 @@
 ﻿@page "/"
+@inject blazor_client.Services.ToastManager toasts
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+<BlazorStrap.BSButton @onclick="ShowToast">test</BlazorStrap.BSButton>
+
+@code {
+    void ShowToast()
+    {
+        toasts.ShowToast("doo", "dee", TimeSpan.FromSeconds(5));
+    }
+}
