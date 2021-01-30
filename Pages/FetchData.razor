@@ -1,0 +1,122 @@
+﻿@page "/fetchdata"
+@inject HttpClient Http
+@inherits blazor_client.Reactivity.ReactiveComponentBase
+@using blazor_client.Reactivity;
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+<p>TestInt == @testInt</p>
+
+@if (isLoading)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Temp. (C)</th>
+                <th>Temp. (F)</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@defaultForecast.Date.ToShortDateString()</td>
+                <td>@defaultForecast.TemperatureC</td>
+                <td>@defaultForecast.TemperatureF</td>
+                <td>@defaultForecast.Summary</td>
+            </tr>
+            @foreach (var forecast in forecasts)
+            {
+                <tr>
+                    <td>@forecast.Date.ToShortDateString()</td>
+                    <td>@forecast.TemperatureC</td>
+                    <td>@forecast.TemperatureF</td>
+                    <td>@forecast.Summary</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    WeatherForecast defaultForecast = new WeatherForecast();
+    private ReactiveList<WeatherForecast> forecasts = new ReactiveList<WeatherForecast>();
+    public int testInt;
+    public bool isLoading;
+
+    private async Task RefreshEntries()
+    {
+        //isLoading = true;
+        try
+        {
+            forecasts.Clear();
+            var result = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+            
+            forecasts.AddMultiple(result);
+            await Task.Delay(500);
+
+            foreach (var v in forecasts)
+            {
+                await Task.Delay(200);
+                ++testInt;
+                v.TemperatureC /= 2;
+            }
+        }
+        catch(Exception ex)
+        {
+            Console.Error.WriteLine(ex.ToString());
+        }
+        isLoading = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            ++testInt;
+            await Task.Delay(1000);
+            ++testInt;
+            await RefreshEntries();
+        }
+        catch(Exception ex)
+        {
+            Console.Error.WriteLine(ex.ToString());
+        }
+
+        await Task.Delay(1000);
+        defaultForecast.Summary = "Update #1";
+        await Task.Delay(1000);
+        Set(ref defaultForecast, new WeatherForecast {
+            Date = DateTime.Now,
+            Summary = "Update #2, new value now",
+            TemperatureC = 100
+        });
+
+        await Task.Delay(1000);
+        defaultForecast.Summary = "Update #3";
+
+        await Task.Delay(1000);
+        Console.WriteLine("invisible one before...");
+        defaultForecast.Summary = "this update will not be displayed";
+        Console.WriteLine("update #4");
+        defaultForecast.Summary = "Update #4";
+    }
+
+    public class WeatherForecast : BaseNotifyPropertyChanged
+    {
+        public DateTime Date { get; set; }
+
+        private int _temperatureC;
+        public int TemperatureC { get => _temperatureC; set => NotifyStateChanged(ref _temperatureC, value); }
+
+        private string _summary;
+        public string Summary { get => _summary; set => NotifyStateChanged(ref _summary, value); }
+
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
+}

@@ -1,0 +1,82 @@
+@page "/todo"
+@using System.Linq
+@using blazor_client.Reactivity
+@inherits blazor_client.Reactivity.ReactiveComponentBase
+
+<h1>TODO List</h1>
+
+<div class="input-group">
+    <input placeholder="Label" @bind="workingTitle" />
+    <button class="btn btn-primary" @onclick="CreateItem">Create</button>
+</div>
+@foreach (var item in SortedItems)
+{
+    @if (item.Editing)
+    {
+        <input placeholder="Label" @bind="item.Label" />
+        <button class="btn btn-primary" @onclick="() => { item.Editing = false; item.Updated = DateTime.Now; }">Save</button>
+    }
+    else
+    {
+        <div class="input-group">
+            <p>@item.Label (last updated @item.Updated.ToShortDateString() at @item.Updated.ToLongTimeString())</p>
+            <button @onclick="()=>item.Editing = true">Edit</button>
+        </div>
+    }
+}
+
+@code {
+    private class TodoItem : BaseNotifyPropertyChanged
+    {
+        public long id = DateTime.Now.Ticks;
+        public TodoItem(string label)
+        {
+            Label = label;
+        }
+
+        private DateTime _created = DateTime.Now;
+        public DateTime Created
+        {
+            get => _created;
+            set => NotifyStateChanged(ref _created, value);
+        }
+
+        private DateTime _updated = DateTime.Now;
+        public DateTime Updated
+        {
+            get => _updated;
+            set => NotifyStateChanged(ref _updated, value);
+        }
+
+        private string _label;
+        public string Label
+        {
+            get => _label;
+            set => NotifyStateChanged(ref _label, value);
+        }
+
+        private bool _editing;
+        public bool Editing
+        {
+            get => _editing;
+            set => NotifyStateChanged(ref _editing, value);
+        }
+    }
+
+    private IList<TodoItem> SortedItems
+    {
+        get
+        {
+            Console.WriteLine("Updating sorted items");
+            return Items.OrderBy(a => a.Updated).ToList();
+        }
+    }
+
+    private string workingTitle = "";
+    private ReactiveList<TodoItem> Items = new ReactiveList<TodoItem>();
+    void CreateItem()
+    {
+        Items.Add(new TodoItem(workingTitle));
+        workingTitle = "";
+    }
+}
