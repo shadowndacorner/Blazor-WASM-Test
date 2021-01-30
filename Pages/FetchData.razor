@@ -56,7 +56,7 @@ else
         {
             forecasts.Clear();
             var result = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
-            
+
             forecasts.AddMultiple(result);
             await Task.Delay(500);
 
@@ -112,10 +112,10 @@ else
         public DateTime Date { get; set; }
 
         private int _temperatureC;
-        public int TemperatureC { get => _temperatureC; set => NotifyStateChanged(ref _temperatureC, value); }
+        public int TemperatureC { get => _temperatureC; set => NotifyPropertyChanged(ref _temperatureC, value); }
 
         private string _summary;
-        public string Summary { get => _summary; set => NotifyStateChanged(ref _summary, value); }
+        public string Summary { get => _summary; set => NotifyPropertyChanged(ref _summary, value); }
 
         public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
     }

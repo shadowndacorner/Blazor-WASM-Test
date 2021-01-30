@@ -9,15 +9,15 @@ namespace blazor_client
 {
     public class BaseNotifyPropertyChanged : INotifyPropertyChanged
     {
-        protected void NotifyStateChanged([CallerMemberName] string propertyName = "")
+        protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        protected void NotifyStateChanged<T>(ref T target, T value, [CallerMemberName] string propertyName = "")
+        protected void NotifyPropertyChanged<T>(ref T target, T value, [CallerMemberName] string propertyName = "")
         {
             target = value;
-            NotifyStateChanged(propertyName);
+            NotifyPropertyChanged(propertyName);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

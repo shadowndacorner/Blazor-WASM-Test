@@ -23,7 +23,7 @@ namespace blazor_client.Reactivity
         private void Subitem_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             Console.WriteLine($"[ReactiveList] Property {e.PropertyName} changed");
-            NotifyStateChanged(e.PropertyName);
+            NotifyPropertyChanged(e.PropertyName);
         }
 
         private void TrySetupPropertyChange(T item)
@@ -80,7 +80,7 @@ namespace blazor_client.Reactivity
             }
 
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add));
-            NotifyStateChanged();
+            NotifyPropertyChanged();
         }
 
         public void Add(T item)
@@ -89,7 +89,7 @@ namespace blazor_client.Reactivity
             TrySetupPropertyChange(item);
 
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add));
-            NotifyStateChanged();
+            NotifyPropertyChanged();
         }
 
         public void Clear()
@@ -104,7 +104,7 @@ namespace blazor_client.Reactivity
 
             _internal.Clear();
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove));
-            NotifyStateChanged();
+            NotifyPropertyChanged();
         }
 
         public void Insert(int index, T item)
@@ -112,7 +112,7 @@ namespace blazor_client.Reactivity
             _internal.Insert(index, item);
             TrySetupPropertyChange(item);
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add));
-            NotifyStateChanged();
+            NotifyPropertyChanged();
         }
 
         public bool Remove(T item)
@@ -121,7 +121,7 @@ namespace blazor_client.Reactivity
             if (res) TryUnsetPropertyChange(item);
 
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove));
-            NotifyStateChanged();
+            NotifyPropertyChanged();
             return res;
         }
 
@@ -131,7 +131,7 @@ namespace blazor_client.Reactivity
 
             _internal.RemoveAt(index);
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove));
-            NotifyStateChanged();
+            NotifyPropertyChanged();
         }
     }
 }

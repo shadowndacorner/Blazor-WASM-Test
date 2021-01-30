@@ -38,28 +38,28 @@
         public DateTime Created
         {
             get => _created;
-            set => NotifyStateChanged(ref _created, value);
+            set => NotifyPropertyChanged(ref _created, value);
         }
 
         private DateTime _updated = DateTime.Now;
         public DateTime Updated
         {
             get => _updated;
-            set => NotifyStateChanged(ref _updated, value);
+            set => NotifyPropertyChanged(ref _updated, value);
         }
 
         private string _label;
         public string Label
         {
             get => _label;
-            set => NotifyStateChanged(ref _label, value);
+            set => NotifyPropertyChanged(ref _label, value);
         }
 
         private bool _editing;
         public bool Editing
         {
             get => _editing;
-            set => NotifyStateChanged(ref _editing, value);
+            set => NotifyPropertyChanged(ref _editing, value);
         }
     }
 
